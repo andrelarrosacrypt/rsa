@@ -107,12 +107,20 @@ Miller Rabin Primality Test step 3:
 
 """
 def Miller_Rabin_Primality_Test_step3(a, m, possible_prime):
-    #decimal.getcontext().prec = 100
+    decimal.getcontext().prec = 1000
     print(f'a = {a}')
     print(f'm = {m}')
-    b0 = (a**m)%possible_prime
+    #print(f'a**m = {a**m}')
+    
+    b0 = (decimal.Decimal(a)**decimal.Decimal(m))%decimal.Decimal(possible_prime)
+    # decimal.InvalidOperation: [<class 'decimal.DivisionImpossible'>]
+    
+    #b0 = (a**m)%possible_prime
+
+    #b0 = Decimal(500)**Decimal(500)
+    
     #print(f'b0 = {b0}')
-    if b0 == 1 or b0 == -1:
+    if (b0 == 1 or b0 == -1):
         print(f'1')
         return True
 
