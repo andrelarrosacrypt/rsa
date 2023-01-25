@@ -6,12 +6,13 @@
 """
 
 from generator import Generator
-
+from constants import KEY_SIZE
 """
 gerar chave
 """
 # gerar p e q de tamanho 512 para ter p*q com tamanho 1024
-Generator(10)
+p = Generator(KEY_SIZE)
+print(f'p = {p}')
 
 """
 cifracao/decifracao

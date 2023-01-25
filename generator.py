@@ -10,13 +10,22 @@ imports
 """
 import random
 import math
-from constants import N
+from constants import KEY_SIZE
+import decimal
 
 
 def Generator(size):
+    # Miller_Rabin_Primality_Test(Random_number(size))
     possible_prime = Random_number(size)
-    #print(f'n random = {possible_prime}')
-    Miller_Rabin_Primality_Test(possible_prime)
+    print(f'n random = {possible_prime}')
+    
+    if Miller_Rabin_Primality_Test(possible_prime):
+        # number is prime
+        return possible_prime
+    else:
+        # number is composite
+        return Generator(size)
+
 
 """
 selecione um numero aleatorio de tamanho size
@@ -39,6 +48,10 @@ def Random_number(size):
 Miller Rabin Primality Test
 """
 def Miller_Rabin_Primality_Test(possible_prime):
+    if possible_prime%2 == 0:
+        # even number (composite)
+        return False
+        
     m = Miller_Rabin_Primality_Test_step1(possible_prime)
     #print(f'm final = {m}')
     a = Miller_Rabin_Primality_Test_step2(possible_prime)
@@ -46,11 +59,11 @@ def Miller_Rabin_Primality_Test(possible_prime):
 
     if Miller_Rabin_Primality_Test_step3(a, m, possible_prime):
         # possible_prime is [probably] prime
-        return possible_prime
+        return True
     else:
         # possible_prime is not prime (it is composite)
-        Generator(10) # restart the process
-        #print(f'nao eh primo')
+        return False
+        
 
 """
 Miller Rabin Primality Test step 1: find k and m such that n-1 = 2^k * m
@@ -58,10 +71,10 @@ Miller Rabin Primality Test step 1: find k and m such that n-1 = 2^k * m
 def Miller_Rabin_Primality_Test_step1(possible_prime):
     old_m = 0
     k = 1
-    while(k < 10):
+    while(True):
         #print(f'k = {k}')
         # divided by 2
-        m = (possible_prime-1)/pow(2,k) # 2**k
+        m = (possible_prime-1)/2**k
         #print(f'm = {m}')
         k += 1
 
@@ -94,24 +107,35 @@ Miller Rabin Primality Test step 3:
 
 """
 def Miller_Rabin_Primality_Test_step3(a, m, possible_prime):
+    #decimal.getcontext().prec = 100
+    print(f'a = {a}')
+    print(f'm = {m}')
     b0 = (a**m)%possible_prime
-    print(f'b0 = {b0}')
+    #print(f'b0 = {b0}')
     if b0 == 1 or b0 == -1:
+        print(f'1')
         return True
 
     old_b = b0
     #while(True):
-    for i in range(3):
+    for i in range(100):
         b = (old_b**2)%possible_prime
 
         #print(f'b = {b}')
 
         if b == 1:
+            # composite
+            print(f'2')
             return False
         if b == possible_prime-1:
+            # prime
+            print(f'3')
             return True
             
         old_b = b
         """
         pode entrar em loop infinito, tenho que definir um limite de iteracoes
         """
+    # composite
+    print(f'4')
+    return False

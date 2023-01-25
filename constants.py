@@ -9,5 +9,5 @@
 constantes
 """
 
-# se p*q = 1024 bits entao p/q = 512 bits
-N = 512
+# key size
+KEY_SIZE = 10
