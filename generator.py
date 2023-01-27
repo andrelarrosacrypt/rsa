@@ -10,14 +10,14 @@ imports
 """
 import random
 import math
-from constants import KEY_SIZE
+from constants import KEY_SIZE, PRECISION
 import decimal
 
 
 def Generator(size):
     # Miller_Rabin_Primality_Test(Random_number(size))
     possible_prime = Random_number(size)
-    print(f'n random = {possible_prime}')
+    #print(f'possible prime = {possible_prime}')
     
     if Miller_Rabin_Primality_Test(possible_prime):
         # number is prime
@@ -107,21 +107,14 @@ Miller Rabin Primality Test step 3:
 
 """
 def Miller_Rabin_Primality_Test_step3(a, m, possible_prime):
-    decimal.getcontext().prec = 1000
-    print(f'a = {a}')
-    print(f'm = {m}')
-    #print(f'a**m = {a**m}')
+    decimal.getcontext().prec = PRECISION
+    #print(f'a = {a}')
+    #print(f'm = {m}')
     
     b0 = (decimal.Decimal(a)**decimal.Decimal(m))%decimal.Decimal(possible_prime)
-    # decimal.InvalidOperation: [<class 'decimal.DivisionImpossible'>]
-    
-    #b0 = (a**m)%possible_prime
-
-    #b0 = Decimal(500)**Decimal(500)
-    
     #print(f'b0 = {b0}')
     if (b0 == 1 or b0 == -1):
-        print(f'1')
+        #print(f'1')
         return True
 
     old_b = b0
@@ -133,11 +126,11 @@ def Miller_Rabin_Primality_Test_step3(a, m, possible_prime):
 
         if b == 1:
             # composite
-            print(f'2')
+            #print(f'2')
             return False
         if b == possible_prime-1:
             # prime
-            print(f'3')
+            #print(f'3')
             return True
             
         old_b = b
@@ -145,5 +138,5 @@ def Miller_Rabin_Primality_Test_step3(a, m, possible_prime):
         pode entrar em loop infinito, tenho que definir um limite de iteracoes
         """
     # composite
-    print(f'4')
+    #print(f'4')
     return False

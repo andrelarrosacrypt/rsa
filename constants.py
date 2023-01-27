@@ -9,5 +9,8 @@
 constantes
 """
 
-# key size
+# key (p and q) size
+# TODO: decimal.Overflow: [<class 'decimal.Overflow'>]. How to handle large numbers?
 KEY_SIZE = 10
+# decimal precision
+PRECISION = 1000000000
