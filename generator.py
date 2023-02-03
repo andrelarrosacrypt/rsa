@@ -10,21 +10,26 @@
 imports
 """
 import random
-from constants import PRECISION, ITERATIONS, MAX_MRPT
+from constants import PRECISION, ITERATIONS, MAX_MRPT, SIZE
 import decimal
+import math
 
 
-def Keys(size):
+def Keys():
     """
     Generates public and private keys
     """
     # p and q
     while(True):
-        p = Prime(size)
-        q = Prime(size)
+        p = Prime()
+        q = Prime()
+
+        print(f'p = {p}\nq = {q}')    
 
         if p != q:
             break
+
+    #print(f'p = {p}\nq = {q}')
 
     # n
     n = p*q
@@ -35,12 +40,11 @@ def Keys(size):
     # e and d
     while(True):
         e = random.randrange(2, phi_n-1)
-        gcd = Gcd(e, phi_n)
         d = Find_d(phi_n, e)
 
         # TODO: why? g = gcd(e, phi)
 
-        if d != -1 and gcd == 1 and e != d:
+        if d != -1 and math.gcd(e, phi_n) == 1 and e != d:
             break   # TODO: end program, failed to find d
     
     return ((e,n), (d,n))
@@ -48,7 +52,7 @@ def Keys(size):
 def Find_d(phi_n, e):
     # TODO: always selecting the first d, the lowest. Thats a problem
     for d in range(100):    # TODO: range(?)
-        if (d*e)%phi_n == 1:
+        if pow(d, e, phi_n) == 1:
             return d
     return -1
 
@@ -61,11 +65,13 @@ def Gcd(a, b):
     
     return Gcd(b, a%b)
 
-def Prime(size):
+def Prime():
     # Miller_Rabin_Primality_Test(Random_number(size))
     while(True):
         flag_composite = False
-        possible_prime = Random_number(size)
+        possible_prime = Random_number(SIZE)
+
+        #print(f'possible prime = {possible_prime}\n')
         
         for i in range(ITERATIONS):
             if not Miller_Rabin_Primality_Test(possible_prime):
@@ -81,7 +87,9 @@ def Random_number(size):
     """
     Picks a random number with specific size 
     """
-    return random.randrange(2**(size-1)+1, 2**size - 1)
+    #return random.randrange(2**(size-1)+1, 2**size - 1)
+    #random.randrange(2**(interval-1), 2**interval - 1)
+    return random.getrandbits(size)
 
 def Miller_Rabin_Primality_Test(possible_prime):
     """
@@ -106,21 +114,14 @@ def Miller_Rabin_Primality_Test_step1(possible_prime):
     """
     Miller Rabin Primality Test step 1: find [k] and [m] such that [n-1 = 2^k * m]
     """
-    old_m = 0
-    k = 1
-    while(True):
+
+    m = possible_prime - 1
+    while(m%2 == 0):
         # divide by 2
         # possible_prime - 1 is even (possible_prime is odd), then we can divide it by a power of 2 at least once
-        m = (possible_prime-1)/2**k
-        
-        if not m.is_integer():        
-            m = old_m
-            return m
+        m = m >> 1
 
-        # save possible m value
-        old_m = m
-        # increases the power of 2
-        k += 1
+    return m
 
 def Miller_Rabin_Primality_Test_step2(possible_prime):
     """
@@ -139,23 +140,25 @@ def Miller_Rabin_Primality_Test_step3(a, m, possible_prime):
 
         obs: a%b = -1 = b-1
     """
-    decimal.getcontext().prec = PRECISION
+    #decimal.getcontext().prec = PRECISION
     
-    b0 = (decimal.Decimal(a)**decimal.Decimal(m))%decimal.Decimal(possible_prime)
+    #b0 = (decimal.Decimal(a)**decimal.Decimal(m))%decimal.Decimal(possible_prime)
+    b0 = pow(int(a), int(m), possible_prime)
 
-    if (b0 == 1 or b0 == -1):
+    if (b0 == 1 or b0 == possible_prime - 1):
         # number is prime
         return True
 
     old_b = b0
 
-    for i in range(MAX_MRPT):
-        b = (old_b**2)%possible_prime
+    for _ in range(MAX_MRPT):
+        #b = (old_b**2)%possible_prime
+        b = pow(old_b, 2, possible_prime)
 
         if b == 1:
             # number is composite
             return False
-        if b == possible_prime-1:
+        if b == possible_prime - 1:
             # number is prime
             return True
             

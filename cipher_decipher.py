@@ -1,5 +1,5 @@
-def Cipher_decipher(char, key):
+def Cipher_decipher(x, key):
     """
     RSA cipher/decipher
     """
-    return chr(pow(ord(char), key[0], key[1]))
+    return pow(x, key[0], key[1])
