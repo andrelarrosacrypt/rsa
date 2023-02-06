@@ -9,7 +9,7 @@
 imports
 """
 from generator import Keys, Random_number
-from cipher_decipher import Cipher_decipher
+#from cipher_decipher import Cipher_decipher
 from constants import M_BITS, K_BITS
 import random
 from operator import xor
@@ -17,12 +17,23 @@ from hashlib import sha512
 import base64
 import sys
 
+
+"""
+RSA
+"""
+def RSA(x, key):
+    """
+    RSA cipher/decipher
+    """
+    return pow(int(x), int(key[0]), int(key[1]))
+    #return chr(pow(ord(x), key[0], key[1]))
+
 """
 gerar chave
 """
 #public_key, private_key = ((5,14),(11,14))
 #public_key, private_key = ((313,784319),(160009,784319))
-public_key, private_key = Keys()
+#public_key, private_key = Keys()
 # print(f'\npublic key = (\ne = {public_key[0]}\nn = {public_key[1]}\n)')
 # print(f'\nprivate key = (\nd = {private_key[0]}\nn = {private_key[1]}\n)')
 
@@ -61,7 +72,13 @@ e e phi_n precisam ser coprimos para podermos encontrar d
 """
 funcionando - comeco
 """
-message = input(f'DIGITE MENSAGEM: ')
+# file_name = input(f'DIGITE O NOME DO ARQUIVO: ')
+# message = input(f'DIGITE A MENSAGEM: ')
+
+# file = open(file_name + '.txt',"w")
+# file.write(message)
+
+
 
 # ciphered_message = []
 # for char in message:
@@ -111,57 +128,57 @@ h != h2
 hashlib eh OpenSSL?
 
 """
-msg = message.encode()
 
-message_utf8 = message.encode("utf-8")
-message64_bytes = base64.b64encode(message_utf8)
-message64_string = message64_bytes.decode("utf-8")
-print(f'message64 = {message64_string}\n')
+"""
+assinatura verificacao - comeco
+"""
+# msg = message.encode()
 
-#message = 'teste'.encode()
-# message = 10
-# print(f'message =  {message}\n')
+# # message convertida para base64
+# message_utf8 = message.encode("utf-8")
+# message64_bytes = base64.b64encode(message_utf8)
+# message64_string = message64_bytes.decode("utf-8")
+# print(f'message64 = {message64_string}\n')
 
-#message_digest_1 = int.from_bytes(sha512(message).digest(), byteorder='big')
-message_hash = int.from_bytes(sha512(msg).digest(), 'big')
-print(f'message_hash = {message_hash}\n')
+# message_hash = int.from_bytes(sha512(msg).digest(), 'big')
+# print(f'message_hash = {message_hash}\n')
 
-signature = Cipher_decipher(message_hash, private_key)
-print(f'signature = {signature}\n')
-signature_bytes = signature.to_bytes(sys.getsizeof(signature),'big')
-signature64 = base64.b64encode(signature_bytes)
+# # assinatura convertida para base64
+# signature = Cipher_decipher(message_hash, private_key)
+# print(f'signature = {signature}\n')
+# signature_bytes = signature.to_bytes(sys.getsizeof(signature),'big')
+# signature64 = base64.b64encode(signature_bytes)
 
-# # print(f'message_digest_1: {message_digest_1}')
-# # print(f'message_digest_1 type: {type(message_digest_1)}\n')
+# send = (message64_string, signature64)
 
-# #digital_signature = Cipher_decipher(message_digest_1, private_key)
-# digital_signature = Cipher_decipher(message, private_key)
-# print(f'digital_signature: {digital_signature}')
-# print(f'digital_signature type: {type(digital_signature)}\n')
+# # message convertida da base64 para utf-8
+# message64_bytes2 = send[0].encode("utf-8")
+# message_bytes = base64.b64decode(message64_bytes2)
+# message_utf82 = message_bytes.decode("utf-8")
+# print(f'message_utf82 = {message_utf82}\n')
 
-send = (message64_string, signature64)
+# message_hash_2 = int.from_bytes(sha512(message_utf82.encode()).digest(), 'big')
+# print(f'message_hash_2 = {message_hash_2}\n')
 
-message64_bytes2 = send[0].encode("utf-8")
-message_bytes = base64.b64decode(message64_bytes2)
-message_utf82 = message_bytes.decode("utf-8")
-print(f'message_utf82 = {message_utf82}\n')
+# # assinatura convertida da base64 para int
+# signature_bytes2 = base64.b64decode(signature64)
+# print(f'signature_bytes2 = {signature_bytes2}\n')
+# signature_recovered = int.from_bytes(signature_bytes2, 'big')
+# print(f'signature_recovered = {signature_recovered}\n')
 
-message_hash_2 = int.from_bytes(sha512(message_utf82.encode()).digest(), 'big')
-print(f'message_hash_2 = {message_hash_2}\n')
+# possible_message_hash = Cipher_decipher(signature_recovered, public_key)
+# print(f'possible_message_hash = {possible_message_hash}\n')
 
-signature_bytes2 = base64.b64decode(signature64)
-print(f'signature_bytes2 = {signature_bytes2}\n')
-signature_recovered = int.from_bytes(signature_bytes2, 'big')
-print(f'signature_recovered = {signature_recovered}\n')
+# if message_hash_2 == possible_message_hash:
+#     print(f'TRUE\n')
+#     print(f'message = {message_utf82}\n')
+# else:
+#     print(f'FALSE\n') 
+"""
+assinatura verificacao - fim
+"""
 
-possible_message_hash = Cipher_decipher(signature_recovered, public_key)
-print(f'possible_message_hash = {possible_message_hash}\n')
 
-if message_hash_2 == possible_message_hash:
-    print(f'TRUE\n')
-    print(f'message = {message_utf82}\n')
-else:
-    print(f'FALSE\n')
 
 """
 RSA esta funcionando
