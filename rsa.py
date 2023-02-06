@@ -14,6 +14,7 @@ from constants import M_BITS, K_BITS
 import random
 from operator import xor
 from hashlib import sha512
+import base64
 
 """
 gerar chave
@@ -61,19 +62,19 @@ funcionando - comeco
 """
 message = input(f'DIGITE MENSAGEM: ')
 
-ciphered_message = []
-for char in message:
-    ciphered_message.append(Cipher_decipher(ord(char), public_key))
-print(f'\nMENSAGEM CIFRADA:\n{ciphered_message}')
+# ciphered_message = []
+# for char in message:
+#     ciphered_message.append(Cipher_decipher(ord(char), public_key))
+# print(f'\nMENSAGEM CIFRADA:\n{ciphered_message}')
 
-deciphered_message = ''
-deciphered_message_code = []
-for x in ciphered_message:
-    m = Cipher_decipher(x, private_key)
-    deciphered_message_code.append(m)
-    deciphered_message += chr(m)
-print(f'\nMENSAGEM DECIFRADA CODIGO:\n{deciphered_message_code}')
-print(f'\nMENSAGEM DECIFRADA TEXTO:\n{deciphered_message}')
+# deciphered_message = ''
+# deciphered_message_code = []
+# for x in ciphered_message:
+#     m = Cipher_decipher(x, private_key)
+#     deciphered_message_code.append(m)
+#     deciphered_message += chr(m)
+# print(f'\nMENSAGEM DECIFRADA CODIGO:\n{deciphered_message_code}')
+# print(f'\nMENSAGEM DECIFRADA TEXTO:\n{deciphered_message}')
 """
 funcionando - fim
 """
@@ -110,6 +111,12 @@ hashlib eh OpenSSL?
 
 """
 msg = message.encode()
+
+message_utf8 = message.encode("utf-8")
+message64_bytes = base64.b64encode(message_utf8)
+message64_string = message64_bytes.decode("utf-8")
+print(f'message64 = {message64_string}\n')
+
 #message = 'teste'.encode()
 # message = 10
 # print(f'message =  {message}\n')
@@ -129,9 +136,14 @@ print(f'signature = {signature}\n')
 # print(f'digital_signature: {digital_signature}')
 # print(f'digital_signature type: {type(digital_signature)}\n')
 
-send = (message, signature)
+send = (message64_string, signature)
 
-message_hash_2 = int.from_bytes(sha512(send[0].encode()).digest(), 'big')
+message64_bytes2 = send[0].encode("utf-8")
+message_bytes = base64.b64decode(message64_bytes2)
+message_utf82 = message_bytes.decode("utf-8")
+print(f'message_utf82 = {message_utf82}\n')
+
+message_hash_2 = int.from_bytes(sha512(message_utf82.encode()).digest(), 'big')
 print(f'message_hash_2 = {message_hash_2}\n')
 
 possible_message_hash = Cipher_decipher(signature, public_key)
@@ -139,7 +151,7 @@ print(f'possible_message_hash = {possible_message_hash}\n')
 
 if message_hash_2 == possible_message_hash:
     print(f'TRUE\n')
-    print(f'message = {send[0]}\n')
+    print(f'message = {message_utf82}\n')
 else:
     print(f'FALSE\n')
 
