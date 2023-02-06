@@ -24,7 +24,7 @@ def Keys():
         p = Prime()
         q = Prime()
 
-        print(f'p = {p}\nq = {q}')    
+        print(f'p = {p}\nq = {q}\n')    
 
         if p != q:
             break
@@ -36,22 +36,91 @@ def Keys():
 
     # phi(n)
     phi_n = (p-1)*(q-1)
+    print(f'phi_n = {phi_n}\n')
 
     # e and d
     while(True):
         e = random.randrange(2, phi_n-1)
-        d = Find_d(phi_n, e)
+        #https://www.delftstack.com/howto/python/mod-inverse-python/
+        #d  = pow(e, phi_n-2, phi_n)
+        d = -1
+        if math.gcd(e, phi_n) == 1:
+            d  = pow(e, -1, phi_n)
+        #d = mod_Inv(e, phi_n)
+
+        # y = pow(x, -1, p)
+        # y = invmod(x, p)
+        # x*y == 1 (mod p)
+        # e*d == 1 mod phi_n
+
+        # print(f'e = {e}\n')
+        # print(f'phi_n = {phi_n}\n')
+        # print(f'd = {d}\n')
 
         # TODO: why? g = gcd(e, phi)
 
-        if d != -1 and math.gcd(e, phi_n) == 1 and e != d:
+        # TODO: how to find d != 1
+
+        if d != -1 and d != 1 and math.gcd(e, phi_n) == 1 and e != d:
             break   # TODO: end program, failed to find d
     
     return ((e,n), (d,n))
 
+# muito lento
+def mod_Inv(x,y):
+    for i in range(y):
+        if (x*i)%y==1:
+            return i
+
+
+#https://stackoverflow.com/questions/4798654/modular-multiplicative-inverse-function-in-python
+def egcd(a, b):
+    if a == 0:
+        return (b, 0, 1)
+    else:
+        g, y, x = egcd(b % a, a)
+        return (g, x - (b // a) * y, y)
+#https://stackoverflow.com/questions/4798654/modular-multiplicative-inverse-function-in-python
+def modinv(a, m):
+    g, x, y = egcd(a, m)
+    if g != 1:
+        raise Exception('modular inverse does not exist')
+    else:
+        return x % m
+
+# https://medium.com/geekculture/euclidean-algorithm-using-python-dc7785bb674a
+def extended_euclidean(a, b):
+  if b == 0:
+    gcd, s, t = a, 1, 0
+    return (gcd, s, t)
+  else:
+    s2, t2, s1, t1 = 1, 0, 0, 1
+    while b > 0:
+        q = a // b
+        r, s, t = (a - b * q),(s2 - q * s1),( t2 - q * t1)
+        a,b,s2,t2,s1,t1=b,r,s1,t1,s,t
+    gcd,s,t=a,s2,t2
+    return (gcd,s,t)
+
+# https://www.geeksforgeeks.org/python-program-for-basic-and-extended-euclidean-algorithms-2/
+# function for extended Euclidean Algorithm
+def gcdExtended(a, b):
+    # Base Case
+    if a == 0 :
+        return b,0,1
+             
+    gcd,x1,y1 = gcdExtended(b%a, a)
+     
+    # Update x and y using results of recursive
+    # call
+    x = y1 - (b//a) * x1
+    y = x1
+     
+    return gcd,x,y
+
 def Find_d(phi_n, e):
     # TODO: always selecting the first d, the lowest. Thats a problem
-    for d in range(100):    # TODO: range(?)
+    for d in range(2, 100):    # TODO: range(?)
         if pow(d, e, phi_n) == 1:
             return d
     return -1
@@ -73,7 +142,7 @@ def Prime():
 
         #print(f'possible prime = {possible_prime}\n')
         
-        for i in range(ITERATIONS):
+        for _ in range(ITERATIONS):
             if not Miller_Rabin_Primality_Test(possible_prime):
                 # number is composite
                 flag_composite = True

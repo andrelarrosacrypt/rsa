@@ -21,40 +21,71 @@ gerar chave
 #public_key, private_key = ((5,14),(11,14))
 #public_key, private_key = ((313,784319),(160009,784319))
 public_key, private_key = Keys()
-print(f'\npublic key = {public_key}')
-print(f'\nprivate key = {private_key}')
+print(f'\npublic key = (\ne = {public_key[0]}\nn = {public_key[1]}\n)')
+print(f'\nprivate key = (\nd = {private_key[0]}\nn = {private_key[1]}\n)')
 
+#public_key, private_key = ((17,3233), (413, 3233))
 
 """
 cifracao/decifracao - RSA
 """
-message = input('\nESCREVA MENSAGEM: ')
 
-message_code = []
+"""
 
+1) Cipher_decipher esta funcionando
+2) p e q sao primos
+
+d esta sendo gerado de maneira errada
+
+e e phi_n precisam ser coprimos para podermos encontrar d
+
+"""
+
+# message = 15896327891625974526945156658
+# print(f'message = {message}')
+
+# ciphered_message = Cipher_decipher(message, public_key)
+# print(f'\nciphered_message: {ciphered_message}')
+
+# deciphered_message = Cipher_decipher(ciphered_message, private_key)
+# print(f'\ndeciphered_message: {deciphered_message}')
+
+# message_code = []
+
+# for char in message:
+#     message_code.append(ord(char))
+
+
+
+message = input(f'DIGITE MENSAGEM: ')
+
+ciphered_message = []
 for char in message:
-    message_code.append(ord(char))
+    ciphered_message.append(Cipher_decipher(ord(char), public_key))
+print(f'\nMENSAGEM CIFRADA:\n{ciphered_message}')
 
-print(f'\nMENSAGEM CODIGO: {message_code}')
-
-ciphered_message_text = ''
-ciphered_message_code = []
-for char in message:
-    c = Cipher_decipher(ord(char), public_key)
-    ciphered_message_text += chr(c)
-    ciphered_message_code.append(c)
-print(f'\nMENSAGEM CIFRADA TEXTO: {ciphered_message_text}')
-print(f'\nMENSAGEM CIFRADA CODIGO: {ciphered_message_code}')
+deciphered_message = []
+for x in ciphered_message:
+    deciphered_message.append(Cipher_decipher(x, private_key))
+print(f'\nMENSAGEM DECIFRADA:\n{deciphered_message}')
 
 
-deciphered_message_text = ''
-deciphered_message_code = []
-for char in ciphered_message_text:
-    d = Cipher_decipher(ord(char), private_key)
-    deciphered_message_text += chr(d)
-    deciphered_message_code.append(d)
-print(f'\nMENSAGEM DECIFRADA: {deciphered_message_text}')
-print(f'\nMENSAGEM DECIFRADA CODIGO: {deciphered_message_code}')
+
+# ciphered_message_text = ''
+# for char in message:
+#     c = Cipher_decipher(ord(char), public_key)
+#     ciphered_message_text += chr(c)
+# print(f'\nMENSAGEM CIFRADA TEXTO: {ciphered_message_text}')
+
+
+# deciphered_message_text = ''
+# # for char in ciphered_message_text:
+# #     d = Cipher_decipher(ord(char), private_key)
+# #     #deciphered_message_text += chr(d)
+# #     deciphered_message_code.append(d)
+# for c in ciphered_message_code:
+#     d = Cipher_decipher(c, private_key)
+# print(f'\nMENSAGEM DECIFRADA: {deciphered_message_text}')
 
 
 """
