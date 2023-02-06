@@ -15,6 +15,7 @@ import random
 from operator import xor
 from hashlib import sha512
 import base64
+import sys
 
 """
 gerar chave
@@ -127,6 +128,8 @@ print(f'message_hash = {message_hash}\n')
 
 signature = Cipher_decipher(message_hash, private_key)
 print(f'signature = {signature}\n')
+signature_bytes = signature.to_bytes(sys.getsizeof(signature),'big')
+signature64 = base64.b64encode(signature_bytes)
 
 # # print(f'message_digest_1: {message_digest_1}')
 # # print(f'message_digest_1 type: {type(message_digest_1)}\n')
@@ -136,7 +139,7 @@ print(f'signature = {signature}\n')
 # print(f'digital_signature: {digital_signature}')
 # print(f'digital_signature type: {type(digital_signature)}\n')
 
-send = (message64_string, signature)
+send = (message64_string, signature64)
 
 message64_bytes2 = send[0].encode("utf-8")
 message_bytes = base64.b64decode(message64_bytes2)
@@ -146,7 +149,12 @@ print(f'message_utf82 = {message_utf82}\n')
 message_hash_2 = int.from_bytes(sha512(message_utf82.encode()).digest(), 'big')
 print(f'message_hash_2 = {message_hash_2}\n')
 
-possible_message_hash = Cipher_decipher(signature, public_key)
+signature_bytes2 = base64.b64decode(signature64)
+print(f'signature_bytes2 = {signature_bytes2}\n')
+signature_recovered = int.from_bytes(signature_bytes2, 'big')
+print(f'signature_recovered = {signature_recovered}\n')
+
+possible_message_hash = Cipher_decipher(signature_recovered, public_key)
 print(f'possible_message_hash = {possible_message_hash}\n')
 
 if message_hash_2 == possible_message_hash:
