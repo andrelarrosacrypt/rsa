@@ -24,7 +24,7 @@ def Keys():
         p = Prime()
         q = Prime()
 
-        print(f'p = {p}\nq = {q}\n')    
+        #print(f'p = {p}\nq = {q}\n')    
 
         if p != q:
             break
@@ -36,13 +36,15 @@ def Keys():
 
     # phi(n)
     phi_n = (p-1)*(q-1)
-    print(f'phi_n = {phi_n}\n')
+    #print(f'phi_n = {phi_n}\n')
 
     # e and d
     while(True):
         e = random.randrange(2, phi_n-1)
         #https://www.delftstack.com/howto/python/mod-inverse-python/
         #d  = pow(e, phi_n-2, phi_n)
+
+        #https://stackoverflow.com/questions/60019932/what-does-powa-b-c-do-when-the-exponent-is-negative
         d = -1
         if math.gcd(e, phi_n) == 1:
             d  = pow(e, -1, phi_n)

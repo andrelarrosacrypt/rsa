@@ -21,8 +21,8 @@ gerar chave
 #public_key, private_key = ((5,14),(11,14))
 #public_key, private_key = ((313,784319),(160009,784319))
 public_key, private_key = Keys()
-print(f'\npublic key = (\ne = {public_key[0]}\nn = {public_key[1]}\n)')
-print(f'\nprivate key = (\nd = {private_key[0]}\nn = {private_key[1]}\n)')
+# print(f'\npublic key = (\ne = {public_key[0]}\nn = {public_key[1]}\n)')
+# print(f'\nprivate key = (\nd = {private_key[0]}\nn = {private_key[1]}\n)')
 
 #public_key, private_key = ((17,3233), (413, 3233))
 
@@ -56,7 +56,9 @@ e e phi_n precisam ser coprimos para podermos encontrar d
 #     message_code.append(ord(char))
 
 
-
+"""
+funcionando - comeco
+"""
 message = input(f'DIGITE MENSAGEM: ')
 
 ciphered_message = []
@@ -64,11 +66,17 @@ for char in message:
     ciphered_message.append(Cipher_decipher(ord(char), public_key))
 print(f'\nMENSAGEM CIFRADA:\n{ciphered_message}')
 
-deciphered_message = []
+deciphered_message = ''
+deciphered_message_code = []
 for x in ciphered_message:
-    deciphered_message.append(Cipher_decipher(x, private_key))
-print(f'\nMENSAGEM DECIFRADA:\n{deciphered_message}')
-
+    m = Cipher_decipher(x, private_key)
+    deciphered_message_code.append(m)
+    deciphered_message += chr(m)
+print(f'\nMENSAGEM DECIFRADA CODIGO:\n{deciphered_message_code}')
+print(f'\nMENSAGEM DECIFRADA TEXTO:\n{deciphered_message}')
+"""
+funcionando - fim
+"""
 
 
 # ciphered_message_text = ''
@@ -90,13 +98,29 @@ print(f'\nMENSAGEM DECIFRADA:\n{deciphered_message}')
 
 """
 assinatura
+sha3_512 - 64 bit Digest-Size
+
+h = sha(m)
+h2 = sha(h)
+
+h != h2
+
+
+hashlib eh OpenSSL?
+
 """
-# #msg = message.encode(encoding = 'UTF-8', errors = 'strict')
-# #message = 'teste'.encode(encoding = 'UTF-8', errors = 'strict')
+msg = message.encode()
+#message = 'teste'.encode()
 # message = 10
 # print(f'message =  {message}\n')
 
-# #message_digest_1 = int.from_bytes(sha512(message).digest(), byteorder='big')
+#message_digest_1 = int.from_bytes(sha512(message).digest(), byteorder='big')
+message_hash = int.from_bytes(sha512(msg).digest(), 'big')
+print(f'message_hash = {message_hash}\n')
+
+signature = Cipher_decipher(message_hash, private_key)
+print(f'signature = {signature}\n')
+
 # # print(f'message_digest_1: {message_digest_1}')
 # # print(f'message_digest_1 type: {type(message_digest_1)}\n')
 
@@ -105,7 +129,19 @@ assinatura
 # print(f'digital_signature: {digital_signature}')
 # print(f'digital_signature type: {type(digital_signature)}\n')
 
-#send = (message, digital_signature)
+send = (message, signature)
+
+message_hash_2 = int.from_bytes(sha512(send[0].encode()).digest(), 'big')
+print(f'message_hash_2 = {message_hash_2}\n')
+
+possible_message_hash = Cipher_decipher(signature, public_key)
+print(f'possible_message_hash = {possible_message_hash}\n')
+
+if message_hash_2 == possible_message_hash:
+    print(f'TRUE\n')
+    print(f'message = {send[0]}\n')
+else:
+    print(f'FALSE\n')
 
 """
 RSA esta funcionando
