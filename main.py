@@ -4,7 +4,7 @@ from signature import Sign, Verify_signature
 
 #https://computinglearner.com/how-to-create-a-menu-for-a-python-console-application/
 menu_options = {
-    1 : 'Criar arquivo texto',
+    1 : '\nCriar arquivo texto',
     2 : 'Cifrar arquivo texto',
     3 : 'Decifrar arquivo texto',
     4 : 'Assinar arquivo texto',

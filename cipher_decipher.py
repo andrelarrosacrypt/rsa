@@ -5,8 +5,14 @@
 #     return pow(x, key[0], key[1])
 #     #return chr(pow(ord(x), key[0], key[1]))
 
-from rsa import RSA
 from generator import Keys
+
+def RSA(x, key):
+    """
+    RSA cipher/decipher
+    """
+    return pow(int(x), int(key[0]), int(key[1]))
+    #return chr(pow(ord(x), key[0], key[1]))
 
 def Cipher():
     """
