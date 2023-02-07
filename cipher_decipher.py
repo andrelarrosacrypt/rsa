@@ -1,23 +1,26 @@
-# def Cipher_decipher(x, key):
-#     """
-#     RSA cipher/decipher
-#     """
-#     return pow(x, key[0], key[1])
-#     #return chr(pow(ord(x), key[0], key[1]))
+"""
+    UnB
+    CIC0201 - Seguranca Computacional - 2022/2
+    Andre Larrosa Chimpliganond
+    190010321
+"""
 
-from generator import Keys
+"""
+import
+"""
+from keys import Keys
 
 def RSA(x, key):
     """
     RSA cipher/decipher
     """
     return pow(int(x), int(key[0]), int(key[1]))
-    #return chr(pow(ord(x), key[0], key[1]))
 
 def Cipher():
     """
     Cifra arquivo texto existente
     """
+
     # abre arquivo nao cifrado
     file_name = input(f'DIGITE O NOME DO ARQUIVO QUE DESEJA CIFRAR: ')
     try:
@@ -47,8 +50,10 @@ def Cipher():
 
         ciphered_message += str(RSA(ord(char), public_key)) + '\n'
 
+    # cria arquivo texto com a mensagem cifrada
     file_ciphered = open(file_name + '_ciphered.txt', "w")
     file_ciphered.write(ciphered_message)
+    file_ciphered.close()
 
     file.close()
 
@@ -57,6 +62,7 @@ def Decipher():
     """
     Decifra arquivo texto existente
     """
+
     # abre arquivo cifrado
     file_name = input(f'DIGITE O NOME DO ARQUIVO QUE DESEJA DECIFRAR: ')
     try:
@@ -67,15 +73,14 @@ def Decipher():
     # abre arquivo com a chave privada
     private_key = open('private_key.txt', "r")
     pk = private_key.readlines()
-
     private_key.close()
 
     # decifracao
     lines = file.readlines()
     deciphered_message = ''
-    for i in range(len(lines)):
-        deciphered_message += chr(RSA(lines[i], pk))
+    for l in (lines):
+        deciphered_message += chr(RSA(l, pk))
 
-    print(f'Mensagem decifrada: {deciphered_message}\n')
+    print(f'Mensagem decifrada: {deciphered_message}')
 
     file.close()
